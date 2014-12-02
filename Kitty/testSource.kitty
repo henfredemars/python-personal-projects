@@ -1,0 +1,11 @@
+include toinclude
+
+printugly! "START\n"
+counter = 0
+while counter < 1000
+	counter = counter + 1
+	printugly! (counter + "\n")
+end
+printugly! "END\n"
+a = "A string\n"
+fun!(a)
