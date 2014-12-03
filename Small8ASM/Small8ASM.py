@@ -13,8 +13,8 @@
 #infile = "TestCase3.asm"
 #outfile = "TestCase3.mif"
 
-infile = "mult.asm"
-outfile = "mult.mif"
+infile = "Call.asm"
+outfile = "Call.mif"
 
 INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'LDAA':(3,'88'), #Load A Addr
@@ -51,6 +51,7 @@ INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'STAA_with_index':(2,'EC'), #Store A to index (STAA v,X)
 	'INCX':(1,'FC'), #Increment index register
 	'DECX':(1,'FD'), #Decrement index register
+	'NOP':(1,'00'), #NOOP not part of Small8 standard
         'EQU':(0,''), #Equate, not really an instruction
 	'dc.b':(1,''), #Declare constant byte, not really an instruction
 	'ds.w':(2,''), #Declare storage word, two bytes
