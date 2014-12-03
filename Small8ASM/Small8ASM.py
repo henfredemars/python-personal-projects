@@ -10,6 +10,9 @@
 #	for the desired application. The architecture is small and intuitive, but not
 #	necessarily the most efficient in other aspects.
 
+infile = "TestCase3.asm"
+outfile = "TestCase3.mif"
+
 INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'LDAA':(3,'88'), #Load A Addr
 	'LDAD':(1,'81'), #A<-D
@@ -46,3 +49,106 @@ INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'INCX':(1,'FC'), #Increment index register
 	'DECX':(1,'FD')} #Decrement index register
 
+def isInstruction(s):
+  return s in INS_SET.keys()
+
+def loadFile():
+  fd = open(infile,'r')
+  lines = [line.strip() for line in fd]
+  lines = [line.split() for line in lines if line] #No blank lines
+  for i in range(len(lines)):
+    line = lines[i]
+    if isInstruction(line[0]):
+      line.insert(0,None) #Always have slot for label
+    line.insert(0,None) #Slot for address
+  fd.close()
+  return lines
+
+def stripComments(lines):
+  for line in lines:
+    if line[-1][0]=='*':
+    del line[-1]
+  return lines
+
+#Old,new,lines
+def replaceLables(nextLabel,label,lines):
+  for i in range(len(lines)):
+    for j in range(4):
+      line = lines[i]
+      if j<len(line):
+        part = line[j]
+        if part==nextLabel:
+          line[j]=label
+  return lines
+
+def resolveDuplicateLabels(lines):
+  i = 0
+  line = lines[i]
+  nextLine = lines[i+1]
+  label = line[1]
+  nextLabel = nextLine[1]
+  nextIns = nextLine[2]
+  while i<len(lines)-1:
+    while label and nextLabel and not nextIns:
+      replaceLabels(nextLabel,label,lines)
+      del lines[i]
+      line = lines[i]
+      nextLine = lines[i+1]
+      label = line[1]
+      nextLabel = nextLine[1]
+      nextIns = nextLine[2]
+    i += 1
+    if i>=len(lines): return lines
+    line = lines[i]
+    nextLine = lines[i+1]
+    label = line[1]
+    nextLabel = nextLine[1]
+    nextIns = nextLine[2]
+  return lines
+
+
+def alignLabels(lines):
+  i = 0
+  while i < len(lines)-1:
+    line = lines[i]
+    iIsNext = False
+    if line[1] and not line[2]:
+      lines[i+1][1]=line[1]
+      del lines[i]
+      iIsNext = True
+    if not iIsNext:
+      i += 1
+
+def assignAddresses(lines):
+  counter = 0
+  for line in lines:
+    line[0] = '$' + hex(counter)[2:].zfill(4)
+    counter += INS_SET[line[1]][0]
+    if line[1]:
+      lines = replaceLabels(line[1],line[0],lines)
+    del line[1] #Label information no longer needed
+
+def handleDuplicateInsrNames(lines):
+  for line in lines:
+    if ',' in line[2]: #Assuming addresses have already been resolved
+      if line[1]=='LDAA':
+        line[1]='LDAA_with_index'
+      elif line[1]=='STAA':
+        line[1]='STAA_with_index'
+      else"
+        raise RuntimeError('Unexpected comma')
+
+def convertToBinary(lines):
+  for line in lines:
+    binaryOp = INS_SET[line[1]] #Assuming addresses resolved
+    argument = line[2]
+    if argument[0]=='$':
+      argument = argument[1:]
+    else:
+      argument = hex(argument)[2:].zfill(2)
+    line[1] = binaryOp + argument
+  binaryString = ''.join([''.join(line[1:]) for line in lines])
+  return binaryString
+
+def writeMif(binaryString):
+  header = "
