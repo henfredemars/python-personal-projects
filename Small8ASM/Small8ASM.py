@@ -10,8 +10,11 @@
 #	for the desired application. The architecture is small and intuitive, but not
 #	necessarily the most efficient in other aspects.
 
-infile = "TestCase3.asm"
-outfile = "TestCase3.mif"
+#infile = "TestCase3.asm"
+#outfile = "TestCase3.mif"
+
+infile = "mult.asm"
+outfile = "mult.mif"
 
 INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'LDAA':(3,'88'), #Load A Addr
@@ -50,6 +53,7 @@ INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'DECX':(1,'FD'), #Decrement index register
         'EQU':(0,''), #Equate, not really an instruction
 	'dc.b':(1,''), #Declare constant byte, not really an instruction
+	'ds.w':(2,''), #Declare storage word, two bytes
         'ds.b':(1,'')} #Declare storage byte, not really an instruction, lengh is dynamic
 
 def isInstruction(s):
@@ -87,13 +91,25 @@ def stripComments(lines):
 
 #Old,new,lines
 def replaceLabels(nextLabel,label,lines):
+  print(label)
   for i in range(len(lines)):
     for j in range(4):
       line = lines[i]
       if j<len(line):
         part = line[j]
-        if part==nextLabel:
-          line[j]=label
+        if not part: continue
+        partp = part.split('+')
+        partm = part.split('-')
+        if len(partp)>len(partm):
+          part = partp
+        else:
+          part = partm
+        for p in part:
+          if p==nextLabel:
+            for i in range(len(line)):
+              if not line[i]: continue
+              line[i]=line[i].replace(nextLabel,label)
+              
   return lines
 
 def handleEquates(lines):
@@ -152,6 +168,8 @@ def assignAddresses(lines):
     counter += INS_SET[line[2]][0]
     if line[2]=='ds.b':
       counter += int(line[3])-1
+    if line[2]=='ds.w':
+      counter += int(line[3])*2-2
     if line[1]:
       lines = replaceLabels(line[1][:-1],line[0],lines)
     del line[1] #Label information no longer needed
@@ -209,6 +227,30 @@ def writeMif(binaryString):
   fd.write(''.join(fileString))
   fd.close()
 
+def handleOffsets(lines):
+  for line in lines:
+    i = 2
+    if len(line) < 3: continue
+    part = line[i]
+    if not part: continue
+    if '+' in part:
+      entities = part.split('+')
+      for i in range(len(entities)):
+        if entities[i][0]=='$':
+          entities[i] = int(entities[i][1:],16)
+        else:
+          entities[i] = int(entities[i])
+      line[2]= '$' + hex(sum(entities))[2:].zfill(4)
+    elif '-' in part:
+      entities = part.split('-')
+      for i in range(len(entities)):
+        if entities[i][0]=='$':
+          entities[i] = int(entities[i][1:],16)
+        else:
+          entities[i] = int(entities[i])
+      line[2] = '$' + hex(sum(entities))[2:].zfill(4)
+  return lines        
+
 def main():
   lines = loadFile()
   lines = stripComments(lines)
@@ -217,6 +259,8 @@ def main():
   lines = alignLabels(lines)
   lines = handleDuplicateInsrNames(lines)
   lines = assignAddresses(lines)
+  lines = handleOffsets(lines)
+  [print(line) for line in lines]
   binaryString = convertToBinary(lines)
   writeMif(binaryString)
 
