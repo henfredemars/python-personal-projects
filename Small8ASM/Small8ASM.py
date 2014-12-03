@@ -37,3 +37,12 @@ INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'INCA':(1,'FA'), #Increment A
 	'SETC':(1,'F8'), #Set carry flag
 	'CLRC':(1,'F9'), #Clear carry flag
+	'LDSI':(3,'89'), #Load the stack pointer (SP)
+	'CALL':(3,'C8'), #Call into subroutine
+	'RET':(1,'C0'), #Return from subroutine
+	'LDXI':(3,'8A'), #Load index register
+	'LDAA_with_index':(1,'BC'), #Load A with data pointed to by index register
+	'STAA_with_index':(1,'EC'), #Store A to index (STAA v,X)
+	'INCX':(1,'FC'), #Increment index register
+	'DECX':(1,'FD')} #Decrement index register
+
