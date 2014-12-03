@@ -3,12 +3,12 @@
 #A simple script to assemble Small8 ASM files into MIF binary files
 
 #The Small8 CPU is a two-register multicycle microprocessor core consisting of an accumulator
-#	and a data register. It contains an 8-bit data bus with 16-bit addressing.
+#	and a data register as primary components. It contains an 8-bit data bus with 16-bit addressing.
 #	This core for which this program assembles is designed to minimize the number
 #	of discreet components to fit on small FPGAs. This simple processor does not
 #	provide interrupts by design, as these would be added into the HDL and memory-mapped
 #	for the desired application. The architecture is small and intuitive, but not
-#	necessarily efficient in other aspects
+#	necessarily the most efficient in other aspects.
 
 INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'LDAA':(3,'88'), #Load A Addr
