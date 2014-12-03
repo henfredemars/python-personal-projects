@@ -58,6 +58,8 @@ def isInstruction(s):
 def loadFile():
   fd = open(infile,'r')
   lines = [line.strip() for line in fd]
+  for line in lines:
+    assert 'include' not in line, "Include directive not supported at this time"
   lines = [line.split() for line in lines if line] #No blank lines
   for i in range(len(lines)):
     line = lines[i]
