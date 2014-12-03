@@ -44,10 +44,13 @@ INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'CALL':(3,'C8'), #Call into subroutine
 	'RET':(1,'C0'), #Return from subroutine
 	'LDXI':(3,'8A'), #Load index register
-	'LDAA_with_index':(1,'BC'), #Load A with data pointed to by index register
-	'STAA_with_index':(1,'EC'), #Store A to index (STAA v,X)
+	'LDAA_with_index':(2,'BC'), #Load A with data pointed to by index register
+	'STAA_with_index':(2,'EC'), #Store A to index (STAA v,X)
 	'INCX':(1,'FC'), #Increment index register
-	'DECX':(1,'FD')} #Decrement index register
+	'DECX':(1,'FD'), #Decrement index register
+        'EQU':(0,''), #Equate, not really an instruction
+	'dc.b':(1,''), #Declare constant byte, not really an instruction
+        'ds.b':(1,'')} #Declare storage byte, not really an instruction, lengh is dynamic
 
 def isInstruction(s):
   return s in INS_SET.keys()
@@ -62,16 +65,26 @@ def loadFile():
       line.insert(0,None) #Always have slot for label
     line.insert(0,None) #Slot for address
   fd.close()
+  for line in lines:
+    while len(line) < 4:
+      line.append(None)
   return lines
 
 def stripComments(lines):
   for line in lines:
-    if line[-1][0]=='*':
-    del line[-1]
+    for i in range(len(line)):
+      if not line[i]: continue
+      if line[i][0]=='*':
+        del line[i:]
+        break
+  lines = [line for line in lines if line and not (len(line)==1 and line[0] is None)]
+  for line in lines:
+    while len(line) < 4:
+      line.append(None)
   return lines
 
 #Old,new,lines
-def replaceLables(nextLabel,label,lines):
+def replaceLabels(nextLabel,label,lines):
   for i in range(len(lines)):
     for j in range(4):
       line = lines[i]
@@ -79,6 +92,17 @@ def replaceLables(nextLabel,label,lines):
         part = line[j]
         if part==nextLabel:
           line[j]=label
+  return lines
+
+def handleEquates(lines):
+  i = 0
+  while i<len(lines):
+    line = lines[i]
+    if line[2]=="EQU":
+      lines = replaceLabels(line[1],line[3],lines)
+      del lines[i]
+    else:
+      i += 1
   return lines
 
 def resolveDuplicateLabels(lines):
@@ -98,14 +122,13 @@ def resolveDuplicateLabels(lines):
       nextLabel = nextLine[1]
       nextIns = nextLine[2]
     i += 1
-    if i>=len(lines): return lines
+    if i>=len(lines)-1: return lines
     line = lines[i]
     nextLine = lines[i+1]
     label = line[1]
     nextLabel = nextLine[1]
     nextIns = nextLine[2]
   return lines
-
 
 def alignLabels(lines):
   i = 0
@@ -118,37 +141,80 @@ def alignLabels(lines):
       iIsNext = True
     if not iIsNext:
       i += 1
+  return lines
 
 def assignAddresses(lines):
   counter = 0
   for line in lines:
     line[0] = '$' + hex(counter)[2:].zfill(4)
-    counter += INS_SET[line[1]][0]
+    counter += INS_SET[line[2]][0]
+    if line[2]=='ds.b':
+      counter += int(line[3])-1
     if line[1]:
-      lines = replaceLabels(line[1],line[0],lines)
+      lines = replaceLabels(line[1][:-1],line[0],lines)
     del line[1] #Label information no longer needed
+  for line in lines:
+    if line[2]=='D' or line[2] is None:
+      del line[2]
+  return lines
 
 def handleDuplicateInsrNames(lines):
   for line in lines:
-    if ',' in line[2]: #Assuming addresses have already been resolved
-      if line[1]=='LDAA':
-        line[1]='LDAA_with_index'
-      elif line[1]=='STAA':
-        line[1]='STAA_with_index'
-      else"
+    if line[3] is None: continue
+    if ',' in line[3]:
+      if line[2]=='LDAA':
+        line[2]='LDAA_with_index'
+        line[3]=line[3].split(',')[0]
+      elif line[2]=='STAA':
+        line[2]='STAA_with_index'
+        line[3]=line[3].split(',')[0]
+      else:
         raise RuntimeError('Unexpected comma')
+  return lines
 
 def convertToBinary(lines):
+  binaryString = []
   for line in lines:
-    binaryOp = INS_SET[line[1]] #Assuming addresses resolved
-    argument = line[2]
-    if argument[0]=='$':
+    binaryOp = INS_SET[line[1]][1] #Assuming addresses resolved
+    try:
+      argument = line[2]
+    except IndexError:
+      argument = ''
+    if len(argument)>0 and argument[0]=='$':
       argument = argument[1:]
+    elif argument=='':
+      pass
     else:
-      argument = hex(argument)[2:].zfill(2)
-    line[1] = binaryOp + argument
-  binaryString = ''.join([''.join(line[1:]) for line in lines])
-  return binaryString
+      argument = hex(int(argument))[2:].zfill(2)
+    binaryString.append(binaryOp + argument)
+  return ''.join(binaryString)
 
 def writeMif(binaryString):
-  header = "
+  binaryChunks = [binaryString[i:i+2] for i in range(0,len(binaryString),2)]
+  fileString = []
+  header = "Depth = 4096;\nWidth = 8;\nAddress_radix = hex;\nData_radix = hex;\nContent\n  Begin\n"
+  footer = "End;"
+  fileString.append(header)
+  counter = 0
+  for chunk in binaryChunks:
+    fileString.append(hex(counter)[2:].zfill(4) + " : " + chunk + '\n')
+    counter += 1
+  fileString.append(footer)
+  fd = open(outfile,'w')
+  fd.write(''.join(fileString))
+  fd.close()
+
+def main():
+  print("I'm main!")
+  lines = loadFile()
+  lines = stripComments(lines)
+  lines = handleEquates(lines)
+  lines = resolveDuplicateLabels(lines)
+  lines = alignLabels(lines)
+  lines = handleDuplicateInsrNames(lines)
+  lines = assignAddresses(lines)
+  binaryString = convertToBinary(lines)
+  writeMif(binaryString)
+
+if __name__=='__main__':
+  main()  
