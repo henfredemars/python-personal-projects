@@ -3,7 +3,10 @@ python-personal-projects
 
 A collection of small applications written for exploration or personal need
 
-Later, I will need to move the unit tests here and add more documentation if others actually find this useful
+I have written much more, but most of my work is restricted by licensing restrictions and cannot
+	be posted here (and is not written in Python)
+
+Later, I will need to move the unit tests and add more documentation if others actually find this useful
 
 Contents by Folder:
 
@@ -28,8 +31,8 @@ Kitty: A rather ugly compiler and stack-based virtual machine for a simple, proc
 	It should be easy to add a tracing JIT with the PyPy toolchain, and it was originally the end goal
 	of this work.
 
-Small8ASM: A simple assembler for the Small8 instruction set architecture. Documentation for the
-	supported instructions is provided in the comments
+Small8ASM: A simple assembler for the Small8 instruction set architecture. The ISR is easily
+	determined by examining the script, but it is intended to minimize the number of components
 
 PathRename: Simple utility script that I used to correct invalid file names in my music collection
 
