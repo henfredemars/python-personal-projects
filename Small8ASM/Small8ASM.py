@@ -228,7 +228,7 @@ def writeMif(binaryString):
   fileString.append(header)
   counter = 0
   for chunk in binaryChunks:
-    fileString.append(hex(counter)[2:].zfill(4).upper() + " : " + chunk + '\n')
+    fileString.append(hex(counter)[2:].zfill(4).upper() + " : " + chunk + ';\n')
     counter += 1
   fileString.append(footer)
   fd = open(outfile,'w')
