@@ -192,6 +192,7 @@ def convertToBinary(lines):
   return ''.join(binaryString)
 
 def writeMif(binaryString):
+  binaryString = binaryString.upper()
   binaryChunks = [binaryString[i:i+2] for i in range(0,len(binaryString),2)]
   fileString = []
   header = "Depth = 4096;\nWidth = 8;\nAddress_radix = hex;\nData_radix = hex;\nContent\n  Begin\n"
