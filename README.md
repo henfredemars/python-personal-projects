@@ -25,5 +25,8 @@ Kitty: A rather ugly compiler and stack-based virtual machine for a simple, proc
 	Here, I learned that having a tool to manage your grammar is far more portable than parsing
 	it yourself, and having a well-defined lexer is a worthwhile endeavor
 
+	It should be easy to add a tracing JIT with the PyPy toolchain, and it was originally the end goal
+	of this work.
+
 All GUI applications use tkinter and the Python 3 standard library, and the code is released under the
 	permissive MIT license in the hopes it might be useful to someone else
