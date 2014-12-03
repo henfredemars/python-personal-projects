@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #Kitty ASM compiler for the Kitty langauge!
 
 from Expression import Expression

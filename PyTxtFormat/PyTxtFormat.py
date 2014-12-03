@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #An SMS Formatting/Compression Tool
 
 symbols = """,./;[]\-=`<>?:"{}|_+~!@#$%^&*()1234567890"""

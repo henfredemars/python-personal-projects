@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #Core Virtual Machine for the Kitty Language interpreter
 
 from Context import Context

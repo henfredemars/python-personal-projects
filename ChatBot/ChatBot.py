@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #A simple AI chatbot, to be expanded upon
 
 import random, os, sys

@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #Rename folders to have simple, numeric names, and remove those problematic characters from my music library
 #Different version to preserve folder names
 

@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #Main
 
 import tkinter as tk

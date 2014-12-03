@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #Simple benchmark task: solve puzzles with backtracking algorithm
 
 class Sudoku:
