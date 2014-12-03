@@ -186,6 +186,8 @@ def convertToBinary(lines):
       pass
     else:
       argument = hex(int(argument))[2:].zfill(2)
+    if len(argument)==4:
+      argument = argument[2:] + argument[:2]
     binaryString.append(binaryOp + argument)
   return ''.join(binaryString)
 
