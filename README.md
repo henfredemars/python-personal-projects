@@ -28,5 +28,14 @@ Kitty: A rather ugly compiler and stack-based virtual machine for a simple, proc
 	It should be easy to add a tracing JIT with the PyPy toolchain, and it was originally the end goal
 	of this work.
 
+Small8ASM: A simple assembler for the Small8 instruction set architecture. Documentation for the
+	supported instructions is provided in the comments
+
+PathRename: Simple utility script that I used to correct invalid file names in my music collection
+
+PySudokuSolver: Simple benchmark script that I once used to guage the performance of PyPy
+
+PyMultiplicationScript: A simple script I once used to help my brother practice his multiplication
+
 All GUI applications use tkinter and the Python 3 standard library, and the code is released under the
 	permissive MIT license in the hopes it might be useful to someone else
