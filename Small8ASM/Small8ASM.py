@@ -91,7 +91,6 @@ def stripComments(lines):
 
 #Old,new,lines
 def replaceLabels(nextLabel,label,lines):
-  print(label)
   for i in range(len(lines)):
     for j in range(4):
       line = lines[i]
@@ -260,7 +259,6 @@ def main():
   lines = handleDuplicateInsrNames(lines)
   lines = assignAddresses(lines)
   lines = handleOffsets(lines)
-  [print(line) for line in lines]
   binaryString = convertToBinary(lines)
   writeMif(binaryString)
 
