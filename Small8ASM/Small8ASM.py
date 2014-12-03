@@ -166,9 +166,17 @@ def assignAddresses(lines):
     line[0] = '$' + hex(counter)[2:].zfill(4)
     counter += INS_SET[line[2]][0]
     if line[2]=='ds.b':
-      counter += int(line[3])-1
+      disc = int(line[3])
+      counter += disc-1
+      line[3] = '$00'
+      for i in range(disc-1):
+        line[3] += '00'
     if line[2]=='ds.w':
-      counter += int(line[3])*2-2
+      disc = int(line[3])
+      counter += disc*2-2
+      line[3] = '$00'
+      for i in range(disc*2-1):
+        line[3] += '00'
     if line[1]:
       lines = replaceLabels(line[1][:-1],line[0],lines)
     del line[1] #Label information no longer needed
