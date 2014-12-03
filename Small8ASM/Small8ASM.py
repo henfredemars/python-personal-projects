@@ -205,7 +205,6 @@ def writeMif(binaryString):
   fd.close()
 
 def main():
-  print("I'm main!")
   lines = loadFile()
   lines = stripComments(lines)
   lines = handleEquates(lines)
@@ -217,4 +216,6 @@ def main():
   writeMif(binaryString)
 
 if __name__=='__main__':
-  main()  
+  print("I'm main!")
+  main()
+  print("Processing completed.")
