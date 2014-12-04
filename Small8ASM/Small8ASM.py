@@ -10,11 +10,8 @@
 #	for the desired application. The architecture is small and intuitive, but not
 #	necessarily the most efficient in other aspects.
 
-#infile = "TestCase3.asm"
-#outfile = "TestCase3.mif"
-
-infile = "Call.asm"
-outfile = "Call.mif"
+infile = "MultIns.asm"
+outfile = "MultIns.mif"
 
 INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'LDAA':(3,'88'), #Load A Addr
@@ -52,6 +49,7 @@ INS_SET = {'LDAI':(2,'84'), #Name, length, opcode
 	'INCX':(1,'FC'), #Increment index register
 	'DECX':(1,'FD'), #Decrement index register
 	'NOP':(1,'00'), #NOOP not part of Small8 standard
+	'MULT':(1,'DD'), #MULT not part of Small8 standard
         'EQU':(0,''), #Equate, not really an instruction
 	'dc.b':(1,''), #Declare constant byte, not really an instruction
 	'ds.w':(2,''), #Declare storage word, two bytes
