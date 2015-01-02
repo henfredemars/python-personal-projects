@@ -6,6 +6,8 @@ A collection of small applications written for exploration or personal need
 I have written much more, but most of my work is restricted by licensing restrictions and cannot
 	be posted here (and is not written in Python)
 
+See my work on frank-recruiter-system-dev for work in deployment
+
 Later, I will need to move the unit tests and add more documentation if others actually find this useful
 
 Contents by Folder:
@@ -15,8 +17,12 @@ PyTxtFormat: A GUI application that I use regularly to message close friends and
 	I desire to write. It reforms text to consume less space while remaining human-readable according
 	to translations (substitutions) that you provide while eliminating wasteful spaces
 
+PyHash: Simple utility script to check a directory for changes
+
 ChatBot: A terminal application that provides a simple implementation of a learning chat bot. It is far
 	from perfect, but provided an occasional evening of amusement
+
+"ChatterBox" (so-called): A GUI chat client and server sample
 
 Get2It: A GUI application for individual project management. I wrote this for the many times when I was
 	interrupted while working, repeatedly, eventually forgetting to complete some of the tasks. 
