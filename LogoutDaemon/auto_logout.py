@@ -9,8 +9,6 @@
 #  1) This script runs with good niceness and almost no CPU usage
 #  2) This script (should) run only when I expect to be using the system
 #  3) This script will never run for longer than one hour
-#
-#If user has more than one shell, choose the one with the least idle time
 
 from time import time
 from time import sleep
