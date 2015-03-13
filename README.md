@@ -37,6 +37,11 @@ Kitty: A rather ugly compiler and stack-based virtual machine for a simple, proc
 	It should be easy to add a tracing JIT with the PyPy toolchain, and it was originally the end goal
 	of this work.
 
+LogoutDaemon: Tool to log out session after idle time expires. This program was written for use
+	on a system where I could not set the usual timeout environment variable and the
+	limit on number of logins was low, resulting in the inability to login when
+	accessing the server from an unreliable connection
+
 Small8ASM: A simple assembler for the Small8 instruction set architecture. The ISR is easily
 	determined by examining the script, but it is intended to minimize the number of components
 
