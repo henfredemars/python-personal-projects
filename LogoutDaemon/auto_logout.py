@@ -89,8 +89,6 @@ def main():
   while time()-start_time < maxMonitorTime:
     shells = getMyShells()
     idleTimes = getIdleTimes()
-    print(shells)
-    print(idleTimes)
     for pts in shells:
       if idleTimes[pts] > maxIdleSeconds:
         os.system('kill -HUP ' + shells[pts])
