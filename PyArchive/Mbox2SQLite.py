@@ -2,7 +2,6 @@
 
 import mailbox
 import sqlite3
-import hashlib
 import email.utils as utils
 
 mb = mailbox.mbox('tmail.mbox')
