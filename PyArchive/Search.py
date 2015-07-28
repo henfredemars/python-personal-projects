@@ -62,6 +62,9 @@ print(query)
 for row in conn.execute(query):
   raw = row[0]
   if regex.search(raw):
-    print(raw)
+    if len(raw)>2001:
+      print(raw[0:2000])
+    else:
+      print(raw)
 
 conn.close()
