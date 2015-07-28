@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Tool to help searching the database of emails
+# Tool to help searching the database of emails for a regex
 
 import argparse 
 import sqlite3
