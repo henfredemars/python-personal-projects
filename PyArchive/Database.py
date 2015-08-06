@@ -11,10 +11,13 @@ class Database:
     self.path = Config.database
     self.parser = Parser()
     self.conn = sqlite3.connect(self.path)
-    self.create_table = ("create table if not exists email " + 
-      "(mid text primary key,src text,dst text,ts integer not null,raw text not null)")
+    self.create_tableb = ("create table if not exists email " + 
+      "(mid text primary key,src text,dst text,ts integer not null)")
+    self.create_tablet = ("create virtual table if not exists email_text using fts4 " +
+      "(mid text primary key,raw text not null)")
     c = self.conn.cursor()
-    c.execute(self.create_table)
+    c.execute(self.create_tableb)
+    c.execute(self.create_tablet)
     self.conn.commit()
     c.close()
 
@@ -27,7 +30,8 @@ class Database:
       to = utils.parseaddr(m['To'])[1]
       ts = int(utils.mktime_tz(utils.parsedate_tz(m['Date'])))
       args = (mid,fr,to,ts,raw)      
-      c.execute("insert into email values (?,?,?,?,?)", args)
+      c.execute("insert into email values (?,?,?,?)", args[:-1])
+      c.execute("insert into email_text values (?,?)", (args[0],args[-1]))
     self.conn.commit()
     c.close()
 
@@ -49,3 +53,4 @@ class Database:
   def close(self):
     self.conn.commit()
     self.conn.close()
+    
