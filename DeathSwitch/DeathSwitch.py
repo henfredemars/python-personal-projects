@@ -1,15 +1,15 @@
 
 #A dead-man's switch for sending important information in the event that I die
 
-import smtplib
 import Config
-from Messages import msgs
 from datetime import datetime
 from datetime import timedelta
 from time import sleep
 import os, sys, signal
 
 def send_emails():
+  import smtplib
+  from Messages import msgs
   s = smtplib.SMTP_SSL(Config.host)
   s.login(Config.email,Config.password)
   for msg in msgs:
