@@ -32,7 +32,7 @@ def get_current_time():
 def time_since_touch():
   cur_time = get_current_time()
   t_time = get_touch_time()
-  if t_time > cur_time:
+  if t_time > cur_time or t_time.year < Config.min_sane_year:
     return timedelta()
   return cur_time-t_time
 
