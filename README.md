@@ -24,6 +24,8 @@ ChatBot: A terminal application that provides a simple implementation of a learn
 
 "ChatterBox" (so-called): A GUI chat client and server sample
 
+DeathSwitch: Toy dead-man's switch once used to send out emails if user hasn't logged in after a period.
+
 Get2It: A GUI application for individual project management. I wrote this for the many times when I was
 	interrupted while working, repeatedly, eventually forgetting to complete some of the tasks. 
 	My solution is to create a stack-based representation of my workflow so that, if I need to
