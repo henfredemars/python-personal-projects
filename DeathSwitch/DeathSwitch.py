@@ -15,6 +15,7 @@ def send_emails():
   for msg in msgs:
     s.sendmail(Config.email,msg["To"],msg.as_string())
   s.quit()
+  sys.exit(0)
 
 def is_clock_sane():
   t = datetime.today()
