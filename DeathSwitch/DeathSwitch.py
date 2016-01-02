@@ -44,10 +44,10 @@ def signal_handler(sig,frame):
 
 def daemonize():
   if os.fork():
-    os._exit()
+    os._exit(0)
   os.setsid()
   if os.fork():
-    os._exit()
+    os._exit(0)
   signal.signal(signal.SIGHUP,signal_handler)
   os.chdir("/")
   sys.stdin.close()
