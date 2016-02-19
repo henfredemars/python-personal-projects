@@ -47,6 +47,11 @@ LogoutDaemon: Tool to log out session after idle time expires. This program was 
 Small8ASM: A simple assembler for the Small8 instruction set architecture. The ISR is easily
 	determined by examining the script, but it is intended to minimize the number of components
 
+SubsetCopy: Interactive CLI script that performs a useful but often lacking filesystem operation:
+	subset copy--meaning--copy a subset of files in a directory tree into a new directory
+	tree. Very useful for choosing a subset of files to fit on a portable device with
+	much less storage.
+
 PathRename: Simple utility script that I used to correct invalid file names in my music collection
 
 PySudokuSolver: Simple benchmark script that I once used to guage the performance of PyPy
