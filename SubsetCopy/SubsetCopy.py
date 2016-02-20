@@ -19,6 +19,7 @@ source_directory = None
 dest_directory = None
 max_files_copied = float('inf')
 max_file_size = float('inf')
+max_bytes_copied = float('inf')
 flatten_tree = True
 filter_file_types = False
 
@@ -28,7 +29,7 @@ files_copied = 0
 file_types_allowed = []
 total_bytes_copied = 0
 start_time = time.time()
-file_list = dict()
+file_list = dict() #(src_path)=>(dest_path,fsize)
 
 #Print Xfer Statistics
 def print_stats():
@@ -46,6 +47,7 @@ def interact_user():
   global dest_directory
   global max_files_copied
   global max_file_size
+  global max_bytes_copied
   global flatten_tree
   global filter_file_types
 
@@ -58,6 +60,8 @@ def interact_user():
     .format(max_files_copied))
   max_file_size_n = inputs("Maximum file size (bytes) for each copy [{}]: "
     .format(max_file_size))
+  max_bytes_copied_n = inputs("Maximum total bytes to copy [{}]: "
+    .format(max_bytes_copied))
   flatten_tree_n = inputs("Flatten file tree after copy? [{}]: "
     .format(flatten_tree))
   filter_file_types_n = inputs("Filter file types? [{}]: ".format(filter_file_types))
@@ -69,9 +73,11 @@ def interact_user():
   if dest_directory_n:
     dest_directory = dest_directory_n
   if max_files_copied_n:
-    max_files_copied = float(max_files_copied_n)
+    max_files_copied = int(max_files_copied_n)
+  if max_bytes_copied_n:
+    max_bytes_copied = int(max_bytes_copied_n)
   if max_file_size_n:
-    max_file_size = float(max_file_size_n)
+    max_file_size = int(max_file_size_n)
   if flatten_tree_n:
     flatten_tree = user_truth_bool(flatten_tree_n)
   if filter_file_types_n:
@@ -99,24 +105,30 @@ def populate_file_list():
   for (dirpath, dirnames, filenames) in os.walk(source_directory):
     if filter_file_types:
       filenames = [name for name in filenames if name.endswith(tuple(file_types_allowed))]
-    [file_list.setdefault(os.path.join(dirpath,name),None) for name in filenames if 
-      os.path.getsize(os.path.join(dirpath,name)) <= max_file_size]
+    for name in filenames:
+     src_path = os.path.join(dirpath,name)
+     fsize = os.path.getsize(src_path)
+     if fsize <= max_file_size:
+       file_list.setdefault(src_path,(None,fsize))
 
 #Determine and fill-in the destination paths
 def transform_file_list():
   for path in file_list:
     if flatten_tree:
-      file_list[path] = os.path.join(dest_directory,os.path.basename(path))
+      file_list[path] = (os.path.join(dest_directory,os.path.basename(path)),file_list[path][1])
     else:
-      file_list[path] = os.path.join(dest_directory,path.strip(os.sep))
+      file_list[path] = (os.path.join(dest_directory,path.strip(os.sep)),file_list[path][1])
 
 #Copy the files, being careful not to overwrite and update statistics
 def copy_carefully():
   global files_copied
   global total_bytes_copied
-  while files_copied < max_files_copied:
+  while files_copied < max_files_copied and total_bytes_copied < max_bytes_copied:
     spath = random.choice(list(file_list.keys()))
-    dpath = file_list[spath]
+    dpath,dsize = file_list[spath]
+    if (dsize + total_bytes_copied) > max_bytes_copied:
+      print("Next file would exceed the byte limit. Done.")
+      break
     if os.path.isfile(dpath):
       dst_candidate_path = dpath
       dup_counter = 1
@@ -129,7 +141,8 @@ def copy_carefully():
           ext = ''
         sname += " - {}".format(dup_counter)
         dst_candidate_path = os.path.join(os.path.dirname(dst_candidate_path),sname+ext)
-      dpath = file_list[spath] = dst_candidate_path
+      dpath = dst_candidate_path
+      file_list[spath] = (dpath,file_list[spath][1])
       assert not os.path.isfile(dst_candidate_path), "Shouldn't happen!"
     try:
       print("{} => {}".format(spath,dpath))
