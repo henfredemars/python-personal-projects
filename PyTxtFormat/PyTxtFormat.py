@@ -120,7 +120,7 @@ class PyTxtFormat:
             "PyTxtFormat is a tool to help squish down English text into "
             "a form that's easy to read and effectively uses the limited "
             "space in an SMS message.\n\nThis program was created to "
-            "help me save money when texting my foreign girlfriend over "
+            "help me save money when texting my foreign ex-girlfriend over "
             "Skype. She doesn't have internet access, and I have a lot to "
             "say...\n\nMessages are squished and then divided at word "
             "bounds. You can specify word substitutions as well to replace "
